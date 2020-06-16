@@ -52,7 +52,14 @@ Hamza SOLAK \tab\tab2263762
 \newpage
 \tab\tab
 \section*{Introduction}
-\tab In this project, we aimed to design a regulated and isolated DC-DC power supply using Forward Converter topology. This report contains detailed simulation results of our Forward Converter design, PCB design and 3D view of this design, component selection, bill of materials of component selection and thermal equivalent circuit of our design is provided. Specifications of the Forward Converter is given below:
+\tab In this project, we aimed to design a regulated and isolated DC-DC power supply using Forward Converter topology. This report contains detailed simulation results of our Forward Converter design, PCB design and 3D view of this design, component selection, bill of materials of component selection and thermal equivalent circuit of our design is provided. Basic circuitry and specifications of the Forward Converter is given below:
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{forwardconverter.PNG}
+    \caption{Forward converter circuit schematic }
+    \label{fig:my_label}
+\end{figure}
+
 \begin{center}
 Table 1: Project Design Specifications of Forward Converter
 \newline \\
@@ -88,7 +95,13 @@ Table 1: Project Design Specifications of Forward Converter
  \begin{equation*}
      W_aA_c=\frac{P_{out}J}{K B_{max} f}=\frac{48*500}{0.0005*1300*10*10^3}=3.69 cm^4
  \end{equation*}
- \tab Since we desire to have a high permeability core for Forward Converter, ferrite cores fit better for our application. Considering these, \href{https://www.mag-inc.com/Media/Magnetics/Datasheets/0P44022EC.pdf}{0P44022EC} is selected. It is an E shaped, P material type ferrite core, whose area product is $4.59 cm^4$. \\
+ \tab Since we desire to have a high permeability core for Forward Converter, ferrite cores fit better for our application. Considering these, \href{https://www.mag-inc.com/Media/Magnetics/Datasheets/0P44022EC.pdf}{0P44022EC} is selected. It is an E shaped, P material type ferrite core, whose area product is $4.59 cm^4$. Its geometric shape is given below:
+ \begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{transformer.PNG}
+    \caption{Geometric Shape of Transformer Core}
+    \label{fig:my_label}
+\end{figure}
  \tab After that, we calculated our required primary number of turns for the transformer as follows:
  \begin{equation*}
     n_1>\frac{V_i_{max}*D_{max}}{f_s*B_{sat}*A_e}=\frac{24*0.5}{10^4*0.3*0.000233}=17.167
@@ -140,7 +153,14 @@ Ripple value must be less than twice of this value which is given below:
 \begin{equation*}
 {\displaystyle \Delta }I_{L_o}=(\frac{n_3}{n_1}*V_i-V_o)*\frac{1}{L_o}*t_{on}<0.192 A
 \end{equation*}
-\tab As a result, we need an inductor with $3.8 mH$ inductance in order to meet criteria. This value is relatively high since our switching frequency is small. As a result, we needed to select a core with high inductance per turn square value. Using \href{https://www.mag-inc.com/getattachment/Products/Ferrite-Cores/Learn-More-about-Ferrite-Cores/Magnetics-Ferrite-Catalog-2017.pdf?lang=en-US}{this} catalog of Magnetics, \href{https://www.mag-inc.com/Media/Magnetics/Datasheets/0W44715TC.pdf}{0W44715TC} is selected as our inductor core, whose $A_L$ value is defined as $16100 nH/T^2$ at 10 kHz, which is our switching frequency. Number of turns is calculated as follows:
+\tab As a result, we need an inductor with $3.8 mH$ inductance in order to meet criteria. This value is relatively high since our switching frequency is small. As a result, we needed to select a core with high inductance per turn square value. Using \href{https://www.mag-inc.com/getattachment/Products/Ferrite-Cores/Learn-More-about-Ferrite-Cores/Magnetics-Ferrite-Catalog-2017.pdf?lang=en-US}{this} catalog of Magnetics, \href{https://www.mag-inc.com/Media/Magnetics/Datasheets/0W44715TC.pdf}{0W44715TC} is selected as our inductor core. Its geometric shape is given below:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{inductor.PNG}
+    \caption{Geometric Shape of Inductor Core}
+    \label{fig:my_label}
+\end{figure}
+Its $A_L$ value is defined as $16100 nH/T^2$ at 10 kHz, which is our switching frequency. Number of turns is calculated as follows:
 \begin{equation*}
     N=10^3*\sqrt\frac{L}{A_L}=10^3*\sqrt\frac{3.8 mH}{16100 nH}=15.36 \approx 16 turns
 \end{equation*}
@@ -161,5 +181,73 @@ After that, length of cable that is going to used for inductor is necessary to d
 \begin{equation*}
     P_{core}=V_e*a*B^b*f^c=16.063*10^{-3}*31.320*0.3^{1.585}*40^1.371=44.26 mW
 \end{equation*}
+\subsection*{2) Closed Loop Control}
+\tab Since we desire to have a constant output voltage with variable input voltage, we need to have a closed loop controller. To do that, we used TL494 integrated circuit. Its pin output is given below:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.2]{tl494.png}
+    \caption{TL494 Pin Output Diagram}
+    \label{fig:my_label}
+\end{figure}
+
+\tab First thing to do while deciding our parameters was setting oscillation frequency equal to our selected switching frequency, which is 10 kHz. $R_T$ and $C_T$ values are calculated according to the following formula:
+
+\begin{equation*}
+    f_s=\frac{1}{R_TC_T}
+\end{equation*}
+$C_T$ is selected as 1 nF and $R_T$ is selected as 100 kOhms.  \\
+After that, we moved to Error Amplifier circuit in order to keep output voltage constant, whose schematic is given below:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{error.png}
+    \caption{TL494 Error Amplifier Circuit}
+    \label{fig:my_label}
+\end{figure}
+
+\tab In this circuitry, $R_3$ and $R_4$ resistances create a reference voltage of 2.5 V. $R_8$ and $R_9$ enables us to sample our output voltage and $R_5$ and $R_7$ determines the gain of the amplifier. We decided to stick to resistance values that were given in the example circuit given above, since they meet our requirements. From the TL494 schematic, we can see that there are two error amplifiers in this circuit. However, the other amplifier is usually used for current limiting, which we do not want to have in this case. As a result, we decided to connect its positive input to supply voltage and negative input to ground, so that we never limit the current. \\
+
+\tab After that, we moved on to soft start future of TL494, which can be helpful in limiting stresses on the devices by avoiding high starting currents. Soft start circuit of TL494 is given below:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{soft.PNG}
+    \caption{TL494 Soft Start Circuit}
+    \label{fig:my_label}
+\end{figure}
+
+\tab Soft start time is selected as 15 ms, which is 150 cycles period for 10 kHz frequency. According to that, $C_2$ is selected as 3.3 uF AND $R_6$ is selected as 4.7 kOhms. \\
+
+\tab TL494 is good at creating the PWM signal that we desire. However, it cannot drive a MOSFET directly with its output signal. Considering this, we decided to use an TLP250 digital optocoupler. It also creates isolation between high voltage part and low voltage part of the circuit, which is another advantage. TLP250 circuit is given below:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{opto.PNG}
+    \caption{TLP250 Digital Optocoupler Circuit}
+    \label{fig:my_label}
+\end{figure}
+\tab We needed an another optocoupler in order to isolate output from the controller circuit. We decided to use HCNR200 for this purpose. Its pin diagram and circuitry are given below:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{analog opto.PNG}
+    \caption{HCNR200 Analog Optocoupler Pin Diagram}
+    \label{fig:my_label}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=1]{analog opto devre.PNG}
+    \caption{HCNR200 Analog Optocoupler Isolation Circuit}
+    \label{fig:my_label}
+\end{figure}
+
+\tab Lastly, we need a buck converter to supply integrated circuits that we used in controller without using an external supply. For that, we decided to use D36V6F15 regulator, whose output voltage is 15V and input voltage can be between 50 V-15.2 V, which covers our input range. Its picture is given below:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.3]{buck.PNG}
+    \caption{D36V6F15 Regulator}
+    \label{fig:my_label}
+\end{figure}
 
 \end{document}
