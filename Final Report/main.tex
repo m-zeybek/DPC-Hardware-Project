@@ -50,6 +50,7 @@ Hamza SOLAK \tab\tab2263762
 \end{figure}
 
 \newpage
+
 \tab\tab
 \section*{Introduction}
 \tab In this project, we aimed to design a regulated and isolated DC-DC power supply using Forward Converter topology. This report contains detailed simulation results of our Forward Converter design, PCB design and 3D view of this design, component selection, bill of materials of component selection and thermal equivalent circuit of our design is provided. Basic circuitry and specifications of the Forward Converter is given below:
@@ -186,7 +187,7 @@ After that, length of cable that is going to used for inductor is necessary to d
 \end{equation*}
 \tab To find core losses, Steinmetz's Equation is used once more.  According to that, core loss is calculated below:
 \begin{equation*}
-    P_{core}=V_e*a*B^b*f^c=16.063*10^{-3}*31.320*0.3^{1.585}*40^{}1.371}=44.26 mW
+    P_{core}=V_e*a*B^b*f^c=16.063*10^{-3}*31.320*0.3^{1.585}*40^{1.371}=44.26 mW
 \end{equation*}
 \subsection*{2) Closed Loop Control}
 \tab Since we desire to have a constant output voltage with variable input voltage, we need to have a closed loop controller. To do that, we used TL494 integrated circuit. Its pin output is given below:
@@ -413,9 +414,104 @@ For secondary side diodes, \href{https://www.taiwansemi.com/products/datasheet/S
 \tab As a result, we can say that efficiency increases in higher load resistances since we draw less current from the input side, meaning less losses on the resistive elements and smaller switching losses.
 
 \section*{Thermal Design}
+Thermal design is the one of the important part of design. For thermal design we have to model the system as electrical circuit. Electrical model of thermal heat flow is shown below. We assume that ambient temperature is 50C. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{termal.PNG}
+    \caption{Thermal modelling}
+    \label{fig:my_label}
+\end{figure}
+\subsection{Mosfet Thermal Design}
+Mosfet heating rapidly due to the switching frequency. Mosfet heat transfer equivalent modelling shown below. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{MOSFETHEAT.PNG}
+    \caption{Mosfet Thermal Modelling}
+    \label{fig:my_label}
+\end{figure}
+\begin{equation}
+    R_e_q=\frac{Junction Temperature-Ambient Temperature}{Power Loss}=\frac{130-50}{50}
+\end{equation}
+\begin{equation}
+    R_e_q=1.6
+\end{equation}
+Heat sink to ambient is 1.6-1.25-0.21=0.14 C/W. Considering this, \href{https://www.boydcorp.com/aavid-datasheets/Board-Level-Cooling-Channel-5770.pdf}{577102B00000G} is selected as heatsink for MOSFET, whose thermal resistance is 0.20 C/W. Its package is TO220.Our MOSFET's package is TO-257AA, which is sutiable for TO220 thermal sinks to use. Its picture is given below:
 
-\section*{PCB Design and 3D View}
 
+
+\subsection{Diode Thermal Design}
+Diode's heat do not increase as much as as MOSFET. Diode thermal equivalent model is shown below.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{mosfet_sink.PNG}
+    \caption{Picture of MOSFET Heat Sink}
+    \label{fig:my_label}
+\end{figure}
+\begin{equation}
+    R_e_q=\frac{Junction Temperature-Ambient Temperature}{Power Loss}=\frac{130-50}{25}
+\end{equation}
+\begin{equation}
+    R_e_q=3.2
+\end{equation}
+Heat sink to ambient is 3.2-2.25=0.95 C/W. According to this, \href{https://www.boydcorp.com/aavid-datasheets/Board-Level-Cooling-Extruded-5290.pdf}{530002B02500G} is selected for diodes. Package in this case is also TO220. Its picture is shown below:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.3]{diode_sink.PNG}
+    \caption{Picture of the Diode Heat Sink}
+    \label{fig:my_label}
+\end{figure}
+
+\section*{PCB Design, Bill of Materials and 3D View}
+In PCB design we used Proteus design software. We chose Proteus because it has huge library and we worked with Proteus before.The package of chosen component are available on Proteus library. But transformer of the forward converter is not available on the library so there are holes for transformer block. We design inductor  and we will make our inductor with our hands so there is no package. Our design shown below. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{pcby.PNG}
+    \caption{PCB design of forward converter}
+    \label{fig:my_label}
+\end{figure}
+For calculating we use Digikey PCB with calculator. For high power application I choose $4oz\ft^2$. 1 oz is 23.35g and $1ft^2$ is $0.093m^2$ so our max average current is 10 A so 5mm trace with ideal for design.Also Gerber files are uploaded to GitHub. 3D pc designs are shown below in figures. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.3]{arkapng.PNG}
+    \caption{Back view of the design}
+    \label{fig:my_label}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{3düst.PNG}
+    \caption{Top view of the design}
+    \label{fig:my_label}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{3don.PNG}
+    \caption{Front view of the design}
+    \label{fig:my_label}
+\end{figure}
+\newpage
+Bill of materials are shown below figure
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{bill.PNG}
+    \caption{Front view of the design}
+    \label{fig:my_label}
+\end{figure}
+\newpage
 \section*{Conclusion}
+\tab In this report, our hardware design specifications for Forward Converter are described. Although our main target was implementing this design and having an actual product on our hands at the end of the process, this was not possible due to recent pandemic. \\
+\tab Nevertheless, our alternative approach for this project was really helpful since the project was covering a lot of steps that need to be done before creating an actual product in professional engineering. Using a more detailed simulation was teaching since as simulation gets more detailed, it gives us a better picture about what would actually happen if we tried to implement the project. We gained experience in PCB design which can be very helpful in professional engineering life since no customer wants to buy something built on stripboard. Using Bill of Material and 3D Viewer tools of the PCB design software gave us a better understanding about what would product actually look like how much it would cost more or less. Since these are critical in engineering product, they were also very beneficial. It was a useful experience covering lots of aspects of professional power electronics engineering.
+
+\newpage
+\section*{References}
+\href{http://keysan.me}{http://keysan.me} \\
+\href{https://www.mouser.com/pdfdocs/2-10.pdfhttps://www.mouser.com/pdfdocs/2-10.pdf}{https://www.mouser.com/pdfdocs/2-10.pdf} \\
+\href{http://www.ti.com/lit/ds/symlink/tl494.pdf}{http://www.ti.com/lit/ds/symlink/tl494.pdf} \\
+\href{https://320volt.com/tl494-smps-kontrol-entegresi-hakkinda/}{https://320volt.com/tl494-smps-kontrol-entegresi-hakkinda/} \\
+\href{https://www.mag-inc.com/Media/Magnetics/Datasheets/0P44022EC.pdf}{https://www.mag-inc.com/Media/Magnetics/Datasheets/0P44022EC.pdf} \\
+\href{https://www.mag-inc.com/Media/Magnetics/Datasheets/0W44715TC.pdf}{https://www.mag-inc.com/Media/Magnetics/Datasheets/0W44715TC.pdf} \\
+\href{http://www.irf.com/product-info/datasheets/data/irf5y31n20.pdfhttp://www.irf.com/product-info/datasheets/data/irf5y31n20.pdf}{http://www.irf.com/product-info/datasheets/data/irf5y31n20.pdf} \\
+\href{https://www.taiwansemi.com/products/datasheet/SFAF501G \%20SERIES_H1512.pdf}{https://www.taiwansemi.com/products/datasheet/SFAF501G \%20SERIES_H1512.pdf} \\
+\href{https://www.taiwansemi.com/products/datasheet/SRA1020\%20SERIES_J13.pdf}{https://www.taiwansemi.com/products/datasheet/SRA1020\%20SERIES_J13.pdf} \\
+\href{https://api.kemet.com/component-edge/download/specsheet/ESY477M035AH4AA.pdf}{https://api.kemet.com/component-edge/download/specsheet/ESY477M035AH4AA.pdf} \\
 
 \end{document}
